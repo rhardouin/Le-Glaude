@@ -43,7 +43,7 @@ class LineAnimationState:
 
 class WelcomeBanner(Static):
     FLASH_COLOR = "#FFFFFF"
-    TARGET_COLORS = ("#FFD800", "#FFAF00", "#FF8205", "#FA500F", "#E10500")
+    TARGET_COLORS = ("#FFD800", "#FFAF00", "#FF8205", "#FA500F", "#E10500", "#C50000")
     BORDER_TARGET_COLOR = "#b05800"
 
     LINE_ANIMATION_DURATION_MS = 200
@@ -93,7 +93,7 @@ class WelcomeBanner(Static):
 
     def _initialize_static_line_suffixes(self) -> None:
         self._static_line1_suffix = (
-            f"{self.LOGO_TEXT_GAP}[b]Mistral Vibe v{__version__}[/]"
+            f"{self.LOGO_TEXT_GAP}[b]Le Glaude v{__version__}[/]"
         )
         self._static_line2_suffix = (
             f"{self.LOGO_TEXT_GAP}[dim]{self.config.active_model}[/]"
@@ -235,7 +235,7 @@ class WelcomeBanner(Static):
         return interpolate_color(self._flash_rgb, target_rgb, phase)
 
     def _update_display(self) -> None:
-        for idx in range(5):
+        for idx in range(6):
             self._update_colored_line(idx, idx)
 
         lines = [line if line else Text("") for line in self._cached_text_lines]
@@ -269,14 +269,12 @@ class WelcomeBanner(Static):
         )
 
     def _build_line(self, line_idx: int, color: str) -> str:
-        B = self.BLOCK
-        S = self.SPACE
-
         patterns = [
-            f"{S}[{color}]{B}[/]{S}{S}{S}[{color}]{B}[/]{S}{self._static_line1_suffix}",
-            f"{S}[{color}]{B}{B}[/]{S}[{color}]{B}{B}[/]{S}{self._static_line2_suffix}",
-            f"{S}[{color}]{B}{B}{B}{B}{B}[/]{S}{self._static_line3_suffix}",
-            f"{S}[{color}]{B}[/]{S}[{color}]{B}[/]{S}[{color}]{B}[/]{S}",
-            f"[{color}]{B}{B}{B}[/]{S}[{color}]{B}{B}{B}[/]{self._static_line5_suffix}",
+            f"[{color}]       _.---._[/]{self._static_line1_suffix}",
+            f"[{color}]     .'       '.[/]{self._static_line2_suffix}",
+            f"[{color}] _.-'  O  O  O  '-._ [/]{self._static_line3_suffix}",
+            f"[{color}](___________________)[/]",
+            f"[{color}]     /         \\\\[/]",
+            f"[{color}]    /___________\\\\[/]{self._static_line5_suffix}",
         ]
         return patterns[line_idx]
