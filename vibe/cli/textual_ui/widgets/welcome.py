@@ -43,7 +43,7 @@ class LineAnimationState:
 
 class WelcomeBanner(Static):
     FLASH_COLOR = "#FFFFFF"
-    TARGET_COLORS = ("#FFD800", "#FFAF00", "#FF8205", "#FA500F", "#E10500")
+    TARGET_COLORS = ("#FFD800", "#FFAF00", "#FF8205", "#FA500F", "#E10500", "#C50000")
     BORDER_TARGET_COLOR = "#b05800"
 
     LINE_ANIMATION_DURATION_MS = 200
@@ -59,6 +59,13 @@ class WelcomeBanner(Static):
     BLOCK = "▇▇"
     SPACE = "  "
     LOGO_TEXT_GAP = "   "
+
+    BEAM_HEIGHT = 10
+    BEAM_WIDTH = 20
+    # Number of top rows to render with brighter color
+    BEAM_BRIGHT_ROW_COUNT = 2
+    # Characters to simulate particles/rays in the beam (spaces + dots/ticks)
+    BEAM_CHARS = "  .   ·  '  .   `  . "
 
     def __init__(self, config: VibeConfig) -> None:
         super().__init__(" ")
@@ -88,12 +95,16 @@ class WelcomeBanner(Static):
             + self.LINE_ANIMATION_DURATION_MS
         ) / 1000
 
-        self._cached_text_lines: list[Text | None] = [None] * 7
+        # + BEAM_HEIGHT for the rays
+        self._beam_lines_count = self.BEAM_HEIGHT
+        total_lines = 7 + self._beam_lines_count
+        self._cached_text_lines: list[Text | None] = [None] * total_lines
+        self._beam_offset = 0.0
         self._initialize_static_line_suffixes()
 
     def _initialize_static_line_suffixes(self) -> None:
         self._static_line1_suffix = (
-            f"{self.LOGO_TEXT_GAP}[b]Mistral Vibe v{__version__}[/]"
+            f"{self.LOGO_TEXT_GAP}[b]Le Glaude v{__version__}[/]"
         )
         self._static_line2_suffix = (
             f"{self.LOGO_TEXT_GAP}[dim]{self.config.active_model}[/]"
@@ -158,19 +169,26 @@ class WelcomeBanner(Static):
         self._animation_start_time = monotonic()
 
         def tick() -> None:
-            if self._is_animation_complete():
-                self._stop_timer()
-                return
+            # Animation never strictly "completes" if we want the beam to keep moving
+            # But the logo color transition has an end.
             if self._animation_start_time is None:
                 return
 
             elapsed = monotonic() - self._animation_start_time
+
+            # 1. Update Logo Colors
             updated_lines = self._advance_line_progress(elapsed)
+
+            # 2. Update Border Color
             border_updated = self._advance_border_progress(elapsed)
+
+            # 3. Update Beam Animation
+            beam_updated = self._advance_beam_progress()
 
             if border_updated:
                 self._update_border_color()
-            if updated_lines or border_updated:
+
+            if updated_lines or border_updated or beam_updated:
                 self._update_display()
 
         self.animation_timer = self.set_interval(self.ANIMATION_TICK_INTERVAL, tick)
@@ -202,6 +220,13 @@ class WelcomeBanner(Static):
             return True
 
         return False
+
+    def _advance_beam_progress(self) -> bool:
+        # Move the beam pattern downwards
+        self._beam_offset += 0.5
+        if self._beam_offset >= len(self.BEAM_CHARS):
+            self._beam_offset -= len(self.BEAM_CHARS)
+        return True
 
     def _is_animation_complete(self) -> bool:
         return (
@@ -235,11 +260,64 @@ class WelcomeBanner(Static):
         return interpolate_color(self._flash_rgb, target_rgb, phase)
 
     def _update_display(self) -> None:
-        for idx in range(5):
+        # Update Logo Lines (0-5)
+        for idx in range(6):
             self._update_colored_line(idx, idx)
+
+        # Update Beam Lines (6 to 6 + BEAM_HEIGHT)
+        for i in range(self.BEAM_HEIGHT):
+            line_idx = 6 + i
+            self._cached_text_lines[line_idx] = self._render_beam_line(i)
 
         lines = [line if line else Text("") for line in self._cached_text_lines]
         self.update(Align.center(Group(*lines)))
+
+    def _render_beam_line(self, beam_row_idx: int) -> Text:
+        # Center the beam under the spaceship
+        # Spaceship width approx 21 chars
+        # Beam width is BEAM_WIDTH
+        # We want the beam to look like it's coming from the center
+
+        # Calculate a pattern slice
+        offset = int(self._beam_offset + beam_row_idx) % len(self.BEAM_CHARS)
+        # Create a repeating pattern string long enough
+        pattern_source = self.BEAM_CHARS * 5
+
+        # Select a slice from the pattern based on row index to create a "falling" or "shimmering" effect
+        # We want the beam to be wider at the bottom? Or just a cylinder?
+        # Let's do a simple cylinder/cone for now.
+
+        # Cone width: starts narrow (under the O O O), gets wider?
+        # Let's keep it simple: straight beam with tapering opacity / density
+
+        # Beam width adjustment to match UFO bottom (approx 13 chars) and widen slowly
+        beam_width = 13 + int(beam_row_idx * 0.8)
+
+        # Center alignment padding
+        # UFO center axis is roughly at index 10 (based on " _.-'  O  O  O  '-._ " which is ~19 chars, center ~9-10)
+        # /___________\ is 13 chars wide.
+        center_axis = 10
+        padding = max(0, center_axis - (beam_width // 2))
+
+        start_idx = offset
+        content = pattern_source[start_idx : start_idx + beam_width]
+
+        # Ensure content length matches beam_width
+        if len(content) < beam_width:
+            content = content.ljust(beam_width)
+
+        # Add padding for alignment
+        content = (" " * padding) + content
+
+        # Style: Yellowish beam, fading out?
+        beam_color = (
+            "#FFD800" if beam_row_idx < self.BEAM_BRIGHT_ROW_COUNT else "#FFAF00"
+        )
+
+        # Opacity could be done with alpha if supported, or just dim colors
+        # Let's rely on standard colors for now.
+
+        return Text(content, style=f"{beam_color} dim")
 
     def _get_color(self, line_idx: int) -> str:
         state = self._line_states[line_idx]
@@ -269,14 +347,12 @@ class WelcomeBanner(Static):
         )
 
     def _build_line(self, line_idx: int, color: str) -> str:
-        B = self.BLOCK
-        S = self.SPACE
-
         patterns = [
-            f"{S}[{color}]{B}[/]{S}{S}{S}[{color}]{B}[/]{S}{self._static_line1_suffix}",
-            f"{S}[{color}]{B}{B}[/]{S}[{color}]{B}{B}[/]{S}{self._static_line2_suffix}",
-            f"{S}[{color}]{B}{B}{B}{B}{B}[/]{S}{self._static_line3_suffix}",
-            f"{S}[{color}]{B}[/]{S}[{color}]{B}[/]{S}[{color}]{B}[/]{S}",
-            f"[{color}]{B}{B}{B}[/]{S}[{color}]{B}{B}{B}[/]{self._static_line5_suffix}",
+            f"[{color}]       _.---._[/]{self._static_line1_suffix}",
+            f"[{color}]     .'       '.[/]{self._static_line2_suffix}",
+            f"[{color}] _.-'  O  O  O  '-._ [/]{self._static_line3_suffix}",
+            f"[{color}](___________________)[/]",
+            f"[{color}]     /         \\\\[/]",
+            f"[{color}]    /___________\\\\[/]{self._static_line5_suffix}",
         ]
         return patterns[line_idx]

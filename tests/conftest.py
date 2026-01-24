@@ -51,7 +51,7 @@ def config_dir(
     config_file = config_dir / "config.toml"
     config_file.write_text(tomli_w.dumps(get_base_config()), encoding="utf-8")
 
-    monkeypatch.setattr(global_paths, "_DEFAULT_VIBE_HOME", config_dir)
+    monkeypatch.setattr(global_paths, "_DEFAULT_GLAUDE_HOME", config_dir)
     return config_dir
 
 

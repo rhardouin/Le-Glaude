@@ -91,7 +91,10 @@ class TestACPSetModel:
         )
 
         assert response is not None
-        assert acp_session.agent.config.active_model == "devstral-small"
+        assert (
+            acp_session.agent.config.active_model
+            == "Petit Choux Industriel (devstral-small)"
+        )
 
     @pytest.mark.asyncio
     async def test_set_model_invalid_model_returns_none(
@@ -206,7 +209,10 @@ class TestACPSetModel:
             SetSessionModelRequest(sessionId=session_id, modelId="devstral-small")
         )
 
-        assert acp_session.agent.config.get_active_model().alias == "devstral-small"
+        assert (
+            acp_session.agent.config.get_active_model().alias
+            == "Petit Choux Industriel (devstral-small)"
+        )
 
     @pytest.mark.asyncio
     async def test_set_model_calls_reload_with_initial_messages(
@@ -232,7 +238,10 @@ class TestACPSetModel:
             mock_reload.assert_called_once()
             call_args = mock_reload.call_args
             assert call_args.kwargs["config"] is not None
-            assert call_args.kwargs["config"].active_model == "devstral-small"
+            assert (
+                call_args.kwargs["config"].active_model
+                == "Petit Choux Industriel (devstral-small)"
+            )
 
     @pytest.mark.asyncio
     async def test_set_model_preserves_conversation_history(

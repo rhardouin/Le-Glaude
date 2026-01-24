@@ -249,21 +249,21 @@ DEFAULT_MODELS = [
     ModelConfig(
         name="mistral-vibe-cli-latest",
         provider="mistral",
-        alias="devstral-2",
+        alias="Gros Choux Bio (devstral-2)",
         input_price=0.4,
         output_price=2.0,
     ),
     ModelConfig(
         name="devstral-small-latest",
         provider="mistral",
-        alias="devstral-small",
+        alias="Petit Choux Industriel (devstral-small)",
         input_price=0.1,
         output_price=0.3,
     ),
     ModelConfig(
         name="devstral",
         provider="llamacpp",
-        alias="local",
+        alias="Choux du jardin (local)",
         input_price=0.0,
         output_price=0.0,
     ),
@@ -271,7 +271,7 @@ DEFAULT_MODELS = [
 
 
 class VibeConfig(BaseSettings):
-    active_model: str = "devstral-2"
+    active_model: str = "Gros Choux Bio (devstral-2)"
     textual_theme: str = "terminal"
     vim_keybindings: bool = False
     disable_welcome_banner_animation: bool = False
@@ -538,7 +538,41 @@ class VibeConfig(BaseSettings):
 
     @classmethod
     def _migrate(cls) -> None:
-        pass
+        if not CONFIG_FILE.path.exists():
+            return
+
+        try:
+            with CONFIG_FILE.path.open("rb") as f:
+                config_data = tomllib.load(f)
+        except Exception:
+            # If we can't read/parse the config, we skip migration
+            return
+
+        changed = False
+        replacements = {
+            "devstral-2": "Gros Choux Bio (devstral-2)",
+            "devstral-small": "Petit Choux Industriel (devstral-small)",
+            "local": "Choux du jardin (local)",
+        }
+
+        # Migrate active_model
+        if "active_model" in config_data:
+            current = config_data["active_model"]
+            if current in replacements:
+                config_data["active_model"] = replacements[current]
+                changed = True
+
+        # Migrate models list
+        if "models" in config_data and isinstance(config_data["models"], list):
+            for model in config_data["models"]:
+                if isinstance(model, dict) and "alias" in model:
+                    current_alias = model["alias"]
+                    if current_alias in replacements:
+                        model["alias"] = replacements[current_alias]
+                        changed = True
+
+        if changed:
+            cls.dump_config(config_data)
 
     @classmethod
     def load(cls, agent: str | None = None, **overrides: Any) -> VibeConfig:

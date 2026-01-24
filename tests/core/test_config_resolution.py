@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from vibe.core.paths.config_paths import CONFIG_FILE
-from vibe.core.paths.global_paths import GLOBAL_CONFIG_FILE, VIBE_HOME
+from vibe.core.paths.global_paths import GLAUDE_HOME, GLOBAL_CONFIG_FILE, VIBE_HOME
 from vibe.core.trusted_folders import trusted_folders_manager
 
 
@@ -14,7 +14,7 @@ class TestResolveConfigFile:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         monkeypatch.chdir(tmp_path)
-        local_config_dir = tmp_path / ".vibe"
+        local_config_dir = tmp_path / ".glaude"
         local_config_dir.mkdir()
         local_config = local_config_dir / "config.toml"
         local_config.write_text('active_model = "test"', encoding="utf-8")
@@ -29,7 +29,7 @@ class TestResolveConfigFile:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         monkeypatch.chdir(tmp_path)
-        local_config_dir = tmp_path / ".vibe"
+        local_config_dir = tmp_path / ".glaude"
         local_config_dir.mkdir()
         local_config = local_config_dir / "config.toml"
         local_config.write_text('active_model = "test"', encoding="utf-8")
@@ -41,7 +41,7 @@ class TestResolveConfigFile:
     ) -> None:
         monkeypatch.chdir(tmp_path)
         # Ensure no local config exists
-        assert not (tmp_path / ".vibe" / "config.toml").exists()
+        assert not (tmp_path / ".glaude" / "config.toml").exists()
 
         assert CONFIG_FILE.path == GLOBAL_CONFIG_FILE.path
 
@@ -51,3 +51,10 @@ class TestResolveConfigFile:
         assert VIBE_HOME.path != tmp_path
         monkeypatch.setenv("VIBE_HOME", str(tmp_path))
         assert VIBE_HOME.path == tmp_path
+
+    def test_respects_glaude_home_env_var(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        assert GLAUDE_HOME.path != tmp_path
+        monkeypatch.setenv("GLAUDE_HOME", str(tmp_path))
+        assert GLAUDE_HOME.path == tmp_path

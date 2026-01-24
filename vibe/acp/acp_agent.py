@@ -92,12 +92,12 @@ class VibeAcpAgent(AcpAgent):
         self.client_capabilities = params.clientCapabilities
 
         # The ACP Agent process can be launched in 3 different ways, depending on installation
-        #  - dev mode: `uv run vibe-acp`, ran from the project root
-        #  - uv tool install: `vibe-acp`, similar to dev mode, but uv takes care of path resolution
-        #  - bundled binary: `./vibe-acp` from binary location
+        #  - dev mode: `uv run glaude-acp`, ran from the project root
+        #  - uv tool install: `glaude-acp`, similar to dev mode, but uv takes care of path resolution
+        #  - bundled binary: `./glaude-acp` from binary location
         # The 2 first modes are working similarly, under the hood uv runs `/some/python /my/entrypoint.py``
         # The last mode is quite different as our bundler also includes the python install.
-        # So sys.executable is already /path/to/binary/vibe-acp.
+        # So sys.executable is already /path/to/binary/glaude-acp.
         # For this reason, we make a distinction in the way we call the setup command
         command = sys.executable
         if "python" not in Path(command).name:
@@ -116,14 +116,14 @@ class VibeAcpAgent(AcpAgent):
         auth_methods = (
             [
                 AuthMethod(
-                    id="vibe-setup",
+                    id="glaude-setup",
                     name="Register your API Key",
-                    description="Register your API Key inside Mistral Vibe",
+                    description="Register your API Key inside Le Glaude",
                     field_meta={
                         "terminal-auth": {
                             "command": command,
                             "args": args,
-                            "label": "Mistral Vibe Setup",
+                            "label": "Le Glaude Setup",
                         }
                     },
                 )
@@ -141,9 +141,7 @@ class VibeAcpAgent(AcpAgent):
             ),
             protocolVersion=PROTOCOL_VERSION,
             agentInfo=Implementation(
-                name="@mistralai/mistral-vibe",
-                title="Mistral Vibe",
-                version=__version__,
+                name="@rhardouin/Le-Glaude", title="Le Glaude", version=__version__
             ),
             authMethods=auth_methods,
         )
