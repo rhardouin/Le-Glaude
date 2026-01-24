@@ -15,39 +15,77 @@ from vibe.cli.textual_ui.widgets.spinner import SpinnerMixin, SpinnerType
 
 class LoadingWidget(SpinnerMixin, Static):
     TARGET_COLORS = ("#FFD800", "#FFAF00", "#FF8205", "#FA500F", "#E10500")
-    SPINNER_TYPE = SpinnerType.BRAILLE
+    SPINNER_TYPE = SpinnerType.CIRCLE
 
     EASTER_EGGS: ClassVar[list[str]] = [
-        "Eating a chocolatine",
-        "Eating a pain au chocolat",
-        "Réflexion",
-        "Analyse",
-        "Contemplation",
-        "Synthèse",
-        "Reading Proust",
-        "Oui oui baguette",
-        "Counting Rs in strawberry",
-        "Seeding Mistral weights",
-        "Vibing",
-        "Sending good vibes",
-        "Petting le chat",
+        # Citations pures
+        "Tiens, ça c'est de la soupe aux choux, de la vraie, faite avec mes choux à moi",
+        "Gamin, on attaque !",
+        "J'm'embête pas avec toi la Denrée, quand je pète tu rappliques d'on ne sait pas où",
+        "Maintenant on va attendre un peu, que ça prenne bien le bouillon",
+        "La soupe au choux mon Blaise, ça parfume jusqu'au trognon",
+        "Et voilà mon gars, t'es calé pour la route !",
+        "Oh c'est t'y bon mon Glaude",
+        "Mon eau, elle a une température de haute précision pour l'perniflard, au degré près",
+        "Si c'est glacé, ça t'tranche l'ventre, mais là ça t'descends dans les boyaux comme la rosée du matin sur les feuilles",
+        "Haut les mains, Judas !",
+        "Maintenant j'vais t'faire passer la cafetière au travers du mur !",
+        "Bon, bah c'est pas tout l'père, mais tu me retarde",
+        "L'heure c'est l'heure, et c'est l'heure du perniflard, j'va m'en enfiler une larmichette",
+        "C'est pas possible... J'suis pourtant pas plein !",
+        "J'l'ai vu c'te soucoupe, j'l'ai vu... avec mes yeux j'l'ai vu",
+        "Eh ben, t'as dû en vider des tonneaux de pinard pendant que j'étais pas là",
+        "Eh ben mes p'tits frères, ça commence bien",
+        "T'as couché avec le Bombé ?!",
+        # Inventions ou détournement de répliques
+        "Faut aérer... ça sent le renfermé dans ce serveur",
+        "Je vous sers un petit canon en attendant la réponse ?",
+        "C'est pas de la soupe en sachet ça, c'est de la vraie !",
+        "Y'a quelqu'un ? Y'a du monde dans les tuyaux ?",
+        "Doucement... Faut pas me bousculer pendant la digestion",
+        "Je regarde là-haut... Des fois qu'ils reviendraient",
+        "Ça a quel goût ? Ça a un goût de reviens-y !",
+        "Attention au Bombé, il arrive avec son litron",
+        "Je suis en train de te préparer une soupe aux choux maison",
+        "Déploiement vers la planète Oxo... Glou glou !",
+        "Nettoyage de la mémoire : on ne gâche rien, les restes ça va dans la soupe",
+        "Ce module est plus vieux que la Francine, mais il tient encore debout",
+        "Envoi des données dans le nuage... Enfin, dans la soucoupe",
+        "Je tourne en rond comme le facteur qui a bu trop de perniflard",
+        "Laisse mijoter le binaire... faut que ça bout doucement",
+        "Compilation réussie ! Ca s'arrose au perniflard !",
     ]
 
     EASTER_EGGS_HALLOWEEN: ClassVar[list[str]] = [
-        "Trick or treating",
-        "Carving pumpkins",
-        "Summoning spirits",
-        "Brewing potions",
-        "Haunting the terminal",
-        "Petting le chat noir",
+        "Des bonbons ou un litron ?",
+        "Chasse aux bugs fantômes... Wouuuh !",
+        "La Francine est sortie de sa boîte !",
+        "C'est pas un loup-garou, c'est le Bombé qui a soif !",
+        "Invocation de démons... heu, de daemons Linux",
+        "C'est pas une citrouille, c'est un chou mutant !",
+        "Déploiement effrayant vers la planète Oxo",
     ]
 
     EASTER_EGGS_DECEMBER: ClassVar[list[str]] = [
-        "Wrapping presents",
-        "Decorating the tree",
-        "Drinking hot chocolate",
-        "Building snowmen",
-        "Writing holiday cards",
+        "Petit Papa Glaude... apporte-moi un code sans bug",
+        "Ça caille ! Remets une bûche dans le serveur !",
+        "Joyeux Noël ! J'ai mis des Louis d'or dans le code",
+        "Emballage des paquets Python au pied du sapin",
+        "La soupe fume sur le feu... compilez en paix",
+        "Menu de réveillon : Dinde farcie aux octets",
+        "Il neige dans le terminal... mettez vos bonnets",
+        "Y'a pas que la dinde qui est fourrée, le cache aussi !",
+        "On attend le Père Noël ou la Denrée ? Dans le doute, je sers la soupe",
+        "Sortez les guirlandes RGB, on va tuner le terminal !",
+        "On boira le canon après le déploiement de minuit",
+        "Glou glou 'Festive Edition' : La soupe au champagne !",
+        "J'entends les cloches... ah non, c'est l'alerte CPU",
+        "Attention au verglas sur le bus de données, ça glisse !",
+        "J'ai demandé un GPU au Père Noël, l'autre a fondu à l'inférence",
+        "Le sapin clignote comme un serveur en panne, c'est beau",
+        "Chants de Noël en 8-bit interprétés par la Denrée",
+        "C'est l'heure d'ouvrir les cadeaux... ou les Pull Requests !",
+        "Il fait froid dehors, mais le processeur me tient chaud",
     ]
 
     def __init__(self, status: str | None = None) -> None:
@@ -62,7 +100,7 @@ class LoadingWidget(SpinnerMixin, Static):
         self._last_elapsed: int = -1
 
     def _get_easter_egg(self) -> str | None:
-        EASTER_EGG_PROBABILITY = 0.10
+        EASTER_EGG_PROBABILITY = 1.0
         if random.random() < EASTER_EGG_PROBABILITY:
             available_eggs = list(self.EASTER_EGGS)
 
