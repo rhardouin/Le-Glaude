@@ -26,9 +26,3 @@ repos:
         args: [--fix, --unsafe-fixes]
       - id: ruff-format
         args: [--check]
-
-  - repo: https://github.com/crate-ci/typos
-    rev: v1.34.0
-    hooks:
-      - id: typos
-        args: [--write-changes]
