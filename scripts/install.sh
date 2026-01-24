@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Mistral Vibe Installation Script
-# This script installs uv if not present and then installs mistral-vibe using uv
+# Le Glaude Installation Script
+# This script installs uv if not present and then installs glaude using uv
 
 set -euo pipefail
 
@@ -78,11 +78,11 @@ function install_uv() {
     fi
 }
 
-function install_vibe() {
-    info "Installing mistral-vibe from GitHub repository using uv..."
-    uv tool install mistral-vibe
+function install_glaude() {
+    info "Installing glaude from GitHub repository using uv..."
+    uv tool install glaude
 
-    success "Mistral Vibe installed successfully! (commands: vibe, vibe-acp)"
+    success "Le Glaude installed successfully! (commands: glaude, glaude-acp)"
 }
 
 function main() {
@@ -97,7 +97,7 @@ function main() {
     echo "██████████████████░░"
     echo "██████████████████░░"
     echo
-    echo "Starting Mistral Vibe installation..."
+    echo "Starting Le Glaude installation..."
     echo
 
     check_platform
@@ -108,18 +108,18 @@ function main() {
         install_uv
     fi
 
-    install_vibe
+    install_glaude
 
-    if command -v vibe &> /dev/null; then
+    if command -v glaude &> /dev/null; then
         success "Installation completed successfully!"
         echo
-        echo "You can now run vibe with:"
-        echo "  vibe"
+        echo "You can now run glaude with:"
+        echo "  glaude"
         echo
         echo "Or for ACP mode:"
-        echo "  vibe-acp"
+        echo "  glaude-acp"
     else
-        error "Installation completed but 'vibe' command not found"
+        error "Installation completed but 'glaude' command not found"
         error "Please check your installation and PATH settings"
         exit 1
     fi
