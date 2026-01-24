@@ -28,7 +28,7 @@ async def test_retrieves_nothing_when_no_versions_are_available() -> None:
 
     transport = httpx.MockTransport(handler)
     async with httpx.AsyncClient(transport=transport, base_url=PYPI_API_URL) as client:
-        gateway = PyPIVersionUpdateGateway(project_name="mistral-vibe", client=client)
+        gateway = PyPIVersionUpdateGateway(project_name="glaude", client=client)
         update = await gateway.fetch_update()
 
     assert update is None
@@ -44,15 +44,9 @@ async def test_retrieves_the_latest_non_yanked_version() -> None:
             json={
                 "versions": ["1.0.0", "1.0.1", "1.0.2"],
                 "files": [
-                    {
-                        "filename": "mistral_vibe-1.0.0-py3-none-any.whl",
-                        "yanked": False,
-                    },
-                    {"filename": "mistral_vibe-1.0.1-py3-none-any.whl", "yanked": True},
-                    {
-                        "filename": "mistral_vibe-1.0.2-py3-none-any.whl",
-                        "yanked": False,
-                    },
+                    {"filename": "glaude-1.0.0-py3-none-any.whl", "yanked": False},
+                    {"filename": "glaude-1.0.1-py3-none-any.whl", "yanked": True},
+                    {"filename": "glaude-1.0.2-py3-none-any.whl", "yanked": False},
                 ],
             },
         )
@@ -73,14 +67,14 @@ async def test_retrieves_nothing_when_only_yanked_versions_are_available() -> No
             json={
                 "versions": ["1.0.0"],
                 "files": [
-                    {"filename": "mistral_vibe-1.0.0-py3-none-any.whl", "yanked": True}
+                    {"filename": "glaude-1.0.0-py3-none-any.whl", "yanked": True}
                 ],
             },
         )
 
     transport = httpx.MockTransport(handler)
     async with httpx.AsyncClient(transport=transport, base_url=PYPI_API_URL) as client:
-        gateway = PyPIVersionUpdateGateway(project_name="mistral-vibe", client=client)
+        gateway = PyPIVersionUpdateGateway(project_name="glaude", client=client)
         update = await gateway.fetch_update()
 
     assert update is None

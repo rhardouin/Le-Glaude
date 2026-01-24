@@ -41,7 +41,7 @@ class TestACPInitialize:
             ),
         )
         assert response.agentInfo == Implementation(
-            name="@mistralai/mistral-vibe", title="Mistral Vibe", version="1.3.5"
+            name="@rhardouin/Le-Glaude", title="Le Glaude", version="1.3.5"
         )
 
         assert response.authMethods == []
@@ -63,18 +63,18 @@ class TestACPInitialize:
             ),
         )
         assert response.agentInfo == Implementation(
-            name="@mistralai/mistral-vibe", title="Mistral Vibe", version="1.3.5"
+            name="@rhardouin/Le-Glaude", title="Le Glaude", version="1.3.5"
         )
 
         assert response.authMethods is not None
         assert len(response.authMethods) == 1
         auth_method = response.authMethods[0]
-        assert auth_method.id == "vibe-setup"
+        assert auth_method.id == "glaude-setup"
         assert auth_method.name == "Register your API Key"
-        assert auth_method.description == "Register your API Key inside Mistral Vibe"
+        assert auth_method.description == "Register your API Key inside Le Glaude"
         assert auth_method.field_meta is not None
         assert "terminal-auth" in auth_method.field_meta
         terminal_auth_meta = auth_method.field_meta["terminal-auth"]
         assert "command" in terminal_auth_meta
         assert "args" in terminal_auth_meta
-        assert terminal_auth_meta["label"] == "Mistral Vibe Setup"
+        assert terminal_auth_meta["label"] == "Le Glaude Setup"

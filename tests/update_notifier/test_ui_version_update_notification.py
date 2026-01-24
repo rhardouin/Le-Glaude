@@ -107,8 +107,7 @@ async def test_ui_displays_update_notification(make_vibe_app: VibeAppFactory) ->
     assert notification.severity == "information"
     assert notification.title == "Update available"
     assert (
-        notification.message
-        == '0.1.0 => 0.2.0\nRun "uv tool upgrade mistral-vibe" to update'
+        notification.message == '0.1.0 => 0.2.0\nRun "uv tool upgrade glaude" to update'
     )
 
 
@@ -216,7 +215,6 @@ async def test_ui_does_show_toast_when_cache_entry_is_too_old(
     assert notification.severity == "information"
     assert notification.title == "Update available"
     assert (
-        notification.message
-        == '0.1.0 => 0.2.0\nRun "uv tool upgrade mistral-vibe" to update'
+        notification.message == '0.1.0 => 0.2.0\nRun "uv tool upgrade glaude" to update'
     )
     assert notifier.fetch_update_calls == 1

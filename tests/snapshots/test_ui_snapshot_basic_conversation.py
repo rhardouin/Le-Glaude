@@ -14,7 +14,7 @@ class SnapshotTestAppWithConversation(BaseSnapshotTestApp):
         config = default_config()
         fake_backend = FakeBackend(
             mock_llm_chunk(
-                content="I'm the Vibe agent and I'm ready to help.",
+                content="I'm the Le Glaude agent and I'm ready to help.",
                 prompt_tokens=10_000,
                 completion_tokens=2_500,
             )
