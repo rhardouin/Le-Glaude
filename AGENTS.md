@@ -1,17 +1,16 @@
-# python312.rule
-# Rule for enforcing modern Python 3.12+ best practices.
-# Applies to all Python files (*.py) in the project.
-#
-# Guidelines covered:
-# - Use match-case syntax instead of if/elif/else for pattern matching.
-# - Use the walrus operator (:=) when it simplifies assignments and tests.
-# - Favor a "never nester" approach by avoiding deep nesting with early returns or guard clauses.
-# - Employ modern type hints using built-in generics (list, dict) and the union pipe (|) operator,
-#   rather than deprecated types from the typing module (e.g., Optional, Union, Dict, List).
-# - Ensure code adheres to strong static typing practices compatible with static analyzers like pyright.
-# - Favor pathlib.Path methods for file system operations over older os.path functions.
-# - Write code in a declarative and minimalist style that clearly expresses its intent.
-# - Additional best practices including f-string formatting, comprehensions, context managers, and overall PEP 8 compliance.
+# Project
+- URL: https://github.com/rhardouin/Le-Glaude
+- Description: Le Glaude is a TUI AI Coding Assistant, a fork of Mistral Vibe.
+- Goal: the project is an humorous Rebranding Mistral Vibe to Le Glaude
+- Audience: Le Glaude is usable by everyone, but jokes and references can only be fully understood by French people who know the movie [La Soupe aux choux](https://en.wikipedia.org/wiki/La_Soupe_aux_choux).
+
+## Rebranding
+
+- Only user facing project name MUST be rebranded: all references to `Mistral Vibe` or`vibe` should be replaced by `Le Glaude` resp. `glaude`
+- **CRITICAL**: Internal project name MUST remain Mistral Vibe. DO NOT RENAME internals (e.g., package names, module names, etc.).
+
+
+# Python Rules
 
 description: "Modern Python 3.12+ best practices and style guidelines for coding."
 files: "**/*.py"

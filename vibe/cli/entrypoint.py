@@ -16,7 +16,7 @@ from vibe.setup.trusted_folders.trust_folder_dialog import (
 
 
 def parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the Mistral Vibe interactive CLI")
+    parser = argparse.ArgumentParser(description="Run the Le Glaude interactive CLI")
     parser.add_argument(
         "-v", "--version", action="version", version=f"%(prog)s {__version__}"
     )
@@ -83,7 +83,7 @@ def parse_arguments() -> argparse.Namespace:
         "--agent",
         metavar="NAME",
         default=None,
-        help="Load agent configuration from ~/.vibe/agents/NAME.toml",
+        help="Load agent configuration from ~/.glaude/agents/NAME.toml",
     )
     parser.add_argument("--setup", action="store_true", help="Setup API key and exit")
 
